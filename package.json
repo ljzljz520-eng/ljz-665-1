@@ -1,0 +1,17 @@
+{
+  "name": "lab-lowcode-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "低代码平台 · 实验仪器档案模块（SQL Server 优先，不可达时降级本地文件演示）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2",
+    "jsonwebtoken": "^9.0.3",
+    "mssql": "^11.0.2",
+    "multer": "^1.4.5-lts.2"
+  }
+}

@@ -15,6 +15,7 @@ async function createDal(config, modules) {
     }
     console.warn(`[db] SQL Server 不可达（${e.message}）`);
     console.warn('[db] ALLOW_FALLBACK=true → 降级为本地文件演示模式（数据写入 ./data，功能与库模式一致）');
+    console.warn('[db] 如需连接真实 SQL Server，请核对 .env 的 DB_SERVER/DB_PORT/DB_USER/DB_PASSWORD，可运行 npm run db:check 自检');
     return require('./fileDriver').connect(config, modules);
   }
 }

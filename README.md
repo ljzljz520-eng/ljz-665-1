@@ -19,14 +19,15 @@ npm start              # http://localhost:3000
 
 ## 数据库（已建好的 SQL Server 库）
 
-`.env` 中配置（默认连接 `mssql:1433` 的 `LabAssets` 库）：
+`.env` 中配置（`DB_SERVER` 必须改成你们真实 SQL Server 的 IP/主机名，
+默认的 `mssql` 只是 docker-compose 编排时的服务名占位，单机部署并不存在该主机）：
 
 ```
-DB_SERVER=mssql        # SQL Server 主机
+DB_SERVER=mssql        # SQL Server 主机/IP，如 192.168.1.10；勿直接照抄占位值
 DB_PORT=1433
 DB_NAME=LabAssets      # 已建好的库；账号有权限且库不存在时会自动创建
 DB_USER=sa
-DB_PASSWORD=***
+DB_PASSWORD=***        # 勿保留占位值 Your_password
 ALLOW_FALLBACK=true    # 库不可达时降级本地文件演示模式；生产强制用库设 false
 ```
 
@@ -34,6 +35,25 @@ ALLOW_FALLBACK=true    # 库不可达时降级本地文件演示模式；生产�
 账号与示例仪器种子数据写入。**SQL Server 不可达且 `ALLOW_FALLBACK=true` 时**，
 自动降级为本地文件存储（`./data`），接口与功能完全一致，保证随时可演示；
 库恢复可达后重启即自动切回 SQL Server。
+
+### 连不上 SQL Server？（自检与排查）
+
+启动日志出现 `SQL Server 不可达 … 降级为本地文件演示模式`，或页面右上角显示
+「数据源：本地文件（演示）」，说明没连上库。先跑自检脚本，按 ✘ 项逐项排查：
+
+```bash
+npm run db:check     # DNS 解析 → TCP 端口 → TDS 登录 逐步检测并给出建议
+```
+
+常见原因：
+
+1. **`DB_SERVER` 照抄了占位值 `mssql`**：该名字只在 docker-compose 网络里有效；
+   若解析到 `198.18.x.x` 等保留网段，说明是代理 fake-ip 劫持，并非真实服务器。
+2. **密码仍是占位符 `Your_password`**：改成真实 sa（或指定账号）密码。
+3. **SQL Server 未启用 TCP/IP 或端口不通**：在 SQL Server 配置管理器启用 TCP/IP，
+   确认 1433 监听，防火墙/安全组放行；可用 `Test-NetConnection <IP> -Port 1433` 验证。
+4. **Azure SQL / 强制加密**：`DB_ENCRYPT=true`。
+5. 想强制暴露问题（不允许降级）：`ALLOW_FALLBACK=false`，连不上库时启动直接报错。
 
 ## 功能清单（仪器档案）
 
@@ -72,6 +92,7 @@ src/engine/crud.js        元数据 → CRUD/附件 REST API
 src/engine/validate.js    元数据 → 服务端校验
 src/db/mssqlDriver.js     SQL Server 驱动（自动建表+种子数据）
 src/db/fileDriver.js      本地文件演示驱动（同一 DAL 接口）
+scripts/check-db.js       SQL Server 连接自检（npm run db:check）
 public/                   元数据驱动的前端 SPA
 uploads/                  附件存储
 data/                     降级模式数据（演示用）

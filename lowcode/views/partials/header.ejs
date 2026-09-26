@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle : '低代码管理平台' %></title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">⚗️ 低代码管理平台</div>
+  <nav class="topbar-menu">
+    <% (menuEntities||[]).forEach(function(m){ %>
+      <a href="/<%= m.entity_key %>" class="<%= activeMenu===m.entity_key ? 'active' : '' %>"><%= m.title %></a>
+    <% }); %>
+  </nav>
+  <div class="topbar-user">
+    <span class="role-badge role-<%= user.role %>"><%= user.role==='admin' ? '管理员' : '普通用户' %></span>
+    <span><%= user.realName %>（<%= user.username %>）</span>
+    <form method="post" action="/logout" style="display:inline">
+      <button class="btn btn-sm btn-ghost" type="submit">退出</button>
+    </form>
+  </div>
+</header>
+<main class="content">

@@ -1,0 +1,102 @@
+<% const pageTitle = entity.title + ' - 低代码平台'; %>
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h2><%= entity.title %></h2>
+    <p class="page-desc">统一管理仪器编号、名称、实验室、负责人、购置日期、状态及随机附件</p>
+  </div>
+  <% if (perm.insert) { %>
+    <a class="btn btn-primary" href="/lab-instrument/form">＋ 新增仪器</a>
+  <% } %>
+</div>
+
+<form class="filter-bar" method="get" action="/lab-instrument">
+  <% entity.fields.filter(f=>f.searchable).forEach(function(f){ %>
+    <% if (f.data_type === 'enum') { %>
+      <select name="<%= f.field_name %>">
+        <option value=""><%= f.label %>：全部</option>
+        <% f.options.forEach(function(o){ %>
+          <option value="<%= o %>" <%= query[f.field_name]===o ? 'selected' : '' %>><%= o %></option>
+        <% }); %>
+      </select>
+    <% } else { %>
+      <input type="text" name="<%= f.field_name %>" value="<%= query[f.field_name] || '' %>" placeholder="<%= f.label %>">
+    <% } %>
+  <% }); %>
+  <button class="btn btn-default" type="submit">查询</button>
+  <a class="btn btn-ghost" href="/lab-instrument">重置</a>
+</form>
+
+<div class="card">
+  <table class="grid">
+    <thead>
+      <tr>
+        <% entity.fields.filter(f=>f.show_in_list).forEach(function(f){ %>
+          <th><%= f.label %></th>
+        <% }); %>
+        <th>附件</th>
+        <th class="col-actions">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!data.rows.length) { %>
+        <tr><td colspan="<%= entity.fields.filter(f=>f.show_in_list).length + 2 %>" class="empty">暂无数据</td></tr>
+      <% } %>
+      <% data.rows.forEach(function(r){ %>
+        <tr>
+          <% entity.fields.filter(f=>f.show_in_list).forEach(function(f){ %>
+            <td>
+              <% if (f.field_name === 'status') { %>
+                <span class="status-tag st-<%= r.status %>"><%= r.status %></span>
+              <% } else { %>
+                <%= r[f.field_name] === null || r[f.field_name] === '' ? '—' : r[f.field_name] %>
+              <% } %>
+            </td>
+          <% }); %>
+          <td>
+            <% if (r.file_count > 0) { %>
+              <a href="/lab-instrument/view/<%= r.id %>" title="查看附件">📎 <%= r.file_count %></a>
+            <% } else { %>
+              <span class="muted">📎 0</span>
+            <% } %>
+          </td>
+          <td class="col-actions">
+            <a class="btn btn-sm btn-default" href="/lab-instrument/view/<%= r.id %>">详情</a>
+            <% if (perm.update) { %>
+              <a class="btn btn-sm btn-default" href="/lab-instrument/form/<%= r.id %>">编辑</a>
+            <% } %>
+            <% if (perm.delete) { %>
+              <button class="btn btn-sm btn-danger" onclick="doDelete(<%= r.id %>, '<%= r.code %>')">删除</button>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <div class="pager">
+    <span class="muted">共 <%= data.total %> 条，第 <%= data.page %>/<%= Math.max(1,data.pages) %> 页</span>
+    <span>
+      <%
+        const qs = Object.keys(query).filter(k=>k!=='page').map(k=>encodeURIComponent(k)+'='+encodeURIComponent(query[k])).join('&');
+        const base = '/lab-instrument?' + (qs ? qs + '&' : '');
+      %>
+      <a class="btn btn-sm btn-default <%= data.page<=1 ? 'disabled' : '' %>" href="<%= base %>page=1">首页</a>
+      <a class="btn btn-sm btn-default <%= data.page<=1 ? 'disabled' : '' %>" href="<%= base %>page=<%= data.page-1 %>">上一页</a>
+      <a class="btn btn-sm btn-default <%= data.page>=data.pages ? 'disabled' : '' %>" href="<%= base %>page=<%= data.page+1 %>">下一页</a>
+      <a class="btn btn-sm btn-default <%= data.page>=data.pages ? 'disabled' : '' %>" href="<%= base %>page=<%= data.pages %>">末页</a>
+    </span>
+  </div>
+</div>
+
+<script>
+async function doDelete(id, code) {
+  if (!confirm('确定删除仪器「' + code + '」吗？其附件记录将一并删除。')) return;
+  const res = await fetch('/lab-instrument/api/records/' + id, { method: 'DELETE' });
+  const j = await res.json();
+  if (j.ok) { location.reload(); } else { alert(j.msg || '删除失败'); }
+}
+</script>
+
+<%- include('../partials/footer') %>

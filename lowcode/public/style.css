@@ -1,0 +1,104 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: #f4f6fa; color: #2c3344; font-size: 14px; }
+a { color: #2f6fed; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- 登录 ---------- */
+.login-body { display: flex; align-items: center; justify-content: center; min-height: 100vh;
+  background: linear-gradient(135deg, #2f6fed 0%, #1b3a8f 100%); }
+.login-card { background: #fff; padding: 40px 36px; border-radius: 12px; width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.login-logo { font-size: 44px; text-align: center; }
+.login-card h1 { text-align: center; font-size: 20px; margin-top: 8px; }
+.login-sub { text-align: center; color: #8a93a5; margin: 6px 0 22px; font-size: 13px; }
+.login-card label { display: block; margin: 12px 0 6px; font-weight: 600; }
+.login-card input { width: 100%; padding: 10px 12px; border: 1px solid #d7dce6; border-radius: 8px; font-size: 14px; }
+.login-hint { margin-top: 18px; padding-top: 14px; border-top: 1px dashed #e3e7ef;
+  font-size: 12px; color: #8a93a5; line-height: 1.9; }
+
+/* ---------- 顶栏 ---------- */
+.topbar { height: 56px; background: #1f2c47; color: #fff; display: flex; align-items: center;
+  padding: 0 22px; gap: 28px; position: sticky; top: 0; z-index: 10; }
+.topbar-brand { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.topbar-menu { display: flex; gap: 6px; flex: 1; }
+.topbar-menu a { color: #c6cfE3; padding: 8px 14px; border-radius: 8px; }
+.topbar-menu a:hover { text-decoration: none; background: rgba(255,255,255,.08); color: #fff; }
+.topbar-menu a.active { background: #2f6fed; color: #fff; }
+.topbar-user { display: flex; align-items: center; gap: 10px; font-size: 13px; white-space: nowrap; }
+.role-badge { padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+.role-admin { background: #e8f0ff; color: #2f6fed; }
+.role-user { background: #eef7ee; color: #3a9d4a; }
+
+.content { max-width: 1200px; margin: 22px auto; padding: 0 22px; }
+.footer { text-align: center; color: #a3aabb; padding: 24px; font-size: 12px; }
+
+/* ---------- 通用 ---------- */
+.card { background: #fff; border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 4px rgba(30,40,70,.06); }
+.card-title { font-size: 15px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #eef1f6; }
+.page-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.page-head h2 { font-size: 19px; }
+.page-desc { color: #8a93a5; font-size: 13px; margin-top: 4px; }
+.muted { color: #99a0af; }
+.req { color: #e04b4b; margin-left: 2px; }
+
+.btn { display: inline-block; border: 1px solid transparent; border-radius: 8px; padding: 8px 16px;
+  font-size: 14px; cursor: pointer; background: #fff; line-height: 1.2; }
+.btn:hover { text-decoration: none; opacity: .92; }
+.btn-primary { background: #2f6fed; color: #fff; }
+.btn-default { background: #fff; border-color: #d7dce6; color: #4a5468; }
+.btn-ghost { background: transparent; color: #6b7488; border-color: #d7dce6; }
+.btn-danger { background: #fff; border-color: #f0b8b8; color: #d83a3a; }
+.btn-danger:hover { background: #fdeeee; }
+.btn-sm { padding: 5px 11px; font-size: 12.5px; border-radius: 6px; }
+.btn-block { width: 100%; margin-top: 20px; }
+.btn.disabled { pointer-events: none; opacity: .45; }
+
+.alert { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; }
+.alert-error { background: #fdeeee; color: #c0392b; border: 1px solid #f5c6c6; }
+.alert-info { background: #eef4ff; color: #2f6fed; border: 1px solid #cfdfff; }
+
+/* ---------- 筛选 ---------- */
+.filter-bar { background: #fff; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px;
+  display: flex; gap: 10px; flex-wrap: wrap; box-shadow: 0 1px 4px rgba(30,40,70,.05); }
+.filter-bar input, .filter-bar select { padding: 7px 10px; border: 1px solid #d7dce6; border-radius: 7px; font-size: 13px; }
+
+/* ---------- 表格 ---------- */
+.grid { width: 100%; border-collapse: collapse; }
+.grid th, .grid td { text-align: left; padding: 11px 12px; border-bottom: 1px solid #f0f2f6; font-size: 13.5px; }
+.grid th { background: #f8f9fc; color: #5a6478; font-weight: 600; white-space: nowrap; }
+.grid tbody tr:hover { background: #f9fbff; }
+.col-actions { white-space: nowrap; text-align: right; }
+.col-actions .btn { margin-left: 6px; }
+.empty { text-align: center; color: #a3aabb; padding: 34px 0 !important; }
+
+.status-tag { display: inline-block; padding: 2px 11px; border-radius: 20px; font-size: 12px; white-space: nowrap; }
+.st-在用 { background: #e6f6ea; color: #2e9b4a; }
+.st-闲置 { background: #f1f3f7; color: #7a8398; }
+.st-维修中 { background: #fff5e0; color: #d0881b; }
+.st-报废 { background: #fdeeee; color: #c0392b; }
+
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 13px; }
+
+/* ---------- 表单 ---------- */
+.form-card { max-width: 840px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; }
+.form-item.span2 { grid-column: 1 / 3; }
+.form-item label { display: block; font-weight: 600; margin-bottom: 6px; }
+.form-item input, .form-item select, .form-item textarea {
+  width: 100%; padding: 9px 11px; border: 1px solid #d7dce6; border-radius: 8px; font-size: 14px;
+  font-family: inherit; }
+.form-item input:focus, .form-item select:focus, .form-item textarea:focus {
+  outline: none; border-color: #2f6fed; box-shadow: 0 0 0 3px rgba(47,111,237,.12); }
+.form-actions { margin-top: 22px; display: flex; gap: 10px; }
+
+/* ---------- 详情 ---------- */
+.detail-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
+@media (max-width: 960px) { .detail-grid { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } .form-item.span2 { grid-column: 1; } }
+.detail-table { width: 100%; }
+.detail-table th { text-align: left; width: 110px; color: #8a93a5; font-weight: 500;
+  padding: 10px 8px; border-bottom: 1px solid #f0f2f6; vertical-align: top; }
+.detail-table td { padding: 10px 8px; border-bottom: 1px solid #f0f2f6; }
+.upload-box { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.upload-box input[type=file] { font-size: 12.5px; flex: 1; }
+.file-grid th, .file-grid td { font-size: 13px; }

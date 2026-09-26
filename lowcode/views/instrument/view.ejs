@@ -1,0 +1,107 @@
+<% const pageTitle = '仪器详情 - 低代码平台'; %>
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h2>仪器详情
+      <span class="status-tag st-<%= record.status %>" style="margin-left:8px"><%= record.status %></span>
+    </h2>
+    <p class="page-desc"><%= record.code %> · <%= record.name %></p>
+  </div>
+  <div>
+    <% if (perm.update) { %>
+      <a class="btn btn-default" href="/lab-instrument/form/<%= record.id %>">编辑档案</a>
+    <% } %>
+    <a class="btn btn-default" href="/lab-instrument">← 返回列表</a>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div class="card">
+    <h3 class="card-title">基础信息</h3>
+    <table class="detail-table">
+      <% entity.fields.forEach(function(f){ %>
+        <tr>
+          <th><%= f.label %></th>
+          <td>
+            <% if (f.field_name === 'status') { %>
+              <span class="status-tag st-<%= record.status %>"><%= record.status %></span>
+            <% } else { %>
+              <%= record[f.field_name] === null || record[f.field_name] === '' ? '—' : record[f.field_name] %>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+      <tr><th>创建时间</th><td><%= record.created_at %></td></tr>
+      <tr><th>更新时间</th><td><%= record.updated_at %></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">
+      附件管理
+      <% if (perm.update) { %><span class="muted" style="font-weight:normal;font-size:12px">（单个文件 ≤ 20MB）</span><% } %>
+    </h3>
+
+    <% if (perm.update) { %>
+      <div class="upload-box">
+        <input type="file" id="fileInput">
+        <button class="btn btn-primary btn-sm" onclick="uploadFile()">上传附件</button>
+      </div>
+      <div id="upMsg" class="muted" style="margin:6px 0"></div>
+    <% } else { %>
+      <div class="alert alert-info">您当前为只读角色，可下载查看附件，不能上传或删除。</div>
+    <% } %>
+
+    <table class="grid file-grid">
+      <thead>
+        <tr><th>文件名</th><th>大小</th><th>上传人</th><th>上传时间</th><th class="col-actions">操作</th></tr>
+      </thead>
+      <tbody id="fileBody">
+        <% if (!files.length) { %>
+          <tr><td colspan="5" class="empty">暂无附件</td></tr>
+        <% } %>
+        <% files.forEach(function(f){ %>
+          <tr data-fid="<%= f.id %>">
+            <td>📄 <%= f.file_name %></td>
+            <td><%= (f.file_size/1024).toFixed(1) %> KB</td>
+            <td><%= f.uploaded_by %></td>
+            <td><%= f.uploaded_at %></td>
+            <td class="col-actions">
+              <a class="btn btn-sm btn-default"
+                 href="/lab-instrument/api/records/<%= record.id %>/files/<%= f.id %>/download">下载</a>
+              <% if (perm.update) { %>
+                <button class="btn btn-sm btn-danger" onclick="deleteFile(<%= f.id %>)">删除</button>
+              <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const INSTRUMENT_ID = <%= record.id %>;
+
+async function uploadFile() {
+  const input = document.getElementById('fileInput');
+  const msg = document.getElementById('upMsg');
+  if (!input.files.length) { msg.textContent = '请先选择文件'; return; }
+  const fd = new FormData();
+  fd.append('file', input.files[0]);
+  msg.textContent = '上传中...';
+  const res = await fetch('/lab-instrument/api/records/' + INSTRUMENT_ID + '/files', { method: 'POST', body: fd });
+  const j = await res.json();
+  if (j.ok) { location.reload(); } else { msg.textContent = ''; alert(j.msg || '上传失败'); }
+}
+
+async function deleteFile(fid) {
+  if (!confirm('确定删除该附件吗？')) return;
+  const res = await fetch('/lab-instrument/api/records/' + INSTRUMENT_ID + '/files/' + fid, { method: 'DELETE' });
+  const j = await res.json();
+  if (j.ok) { location.reload(); } else { alert(j.msg || '删除失败'); }
+}
+</script>
+
+<%- include('../partials/footer') %>

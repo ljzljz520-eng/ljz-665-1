@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 低代码管理平台</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <div class="login-logo">⚗️</div>
+    <h1>低代码管理平台</h1>
+    <p class="login-sub">实验室仪器档案管理系统</p>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <form method="post" action="/login">
+      <label>用户名</label>
+      <input type="text" name="username" value="<%= username %>" placeholder="admin / user" autofocus required>
+      <label>密码</label>
+      <input type="password" name="password" placeholder="请输入密码" required>
+      <button type="submit" class="btn btn-primary btn-block">登 录</button>
+    </form>
+    <div class="login-hint">
+      <div>管理员：<b>admin / admin123</b>（增删改查 + 附件管理）</div>
+      <div>普通用户：<b>user / user123</b>（仅查看）</div>
+    </div>
+  </div>
+</body>
+</html>

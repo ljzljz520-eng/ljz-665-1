@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>提示 - 低代码平台</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">⚗️ 低代码管理平台</div>
+  <div class="topbar-user">
+    <% if (user) { %><span><%= user.realName %></span>
+    <a class="btn btn-sm btn-default" href="/">返回首页</a><% } %>
+  </div>
+</header>
+<main class="content">
+  <div class="card"><h2>操作提示</h2><p><%= message %></p>
+    <a class="btn btn-primary" href="/">返回首页</a>
+  </div>
+</main>
+</body>
+</html>

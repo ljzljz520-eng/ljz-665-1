@@ -1,0 +1,69 @@
+<% const pageTitle = (record ? '编辑仪器' : '新增仪器') + ' - 低代码平台'; %>
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <h2><%= record ? '编辑仪器档案' : '新增仪器档案' %></h2>
+  <a class="btn btn-default" href="/lab-instrument">← 返回列表</a>
+</div>
+
+<% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<div class="card form-card">
+  <form method="post" action="/lab-instrument/form/save" id="instForm" data-id="<%= record ? record.id : '' %>">
+    <div class="form-grid">
+      <% entity.fields.filter(f=>f.show_in_form).forEach(function(f){ %>
+        <div class="form-item <%= f.data_type==='text' ? 'span2' : '' %>">
+          <label>
+            <%= f.label %>
+            <% if (f.is_required) { %><span class="req">*</span><% } %>
+          </label>
+          <% if (f.data_type === 'enum') { %>
+            <select name="<%= f.field_name %>" <%= f.is_required ? 'required' : '' %>>
+              <option value="">请选择</option>
+              <% f.options.forEach(function(o){ %>
+                <option value="<%= o %>" <%= record && record[f.field_name]===o ? 'selected' : '' %>><%= o %></option>
+              <% }); %>
+            </select>
+          <% } else if (f.data_type === 'text') { %>
+            <textarea name="<%= f.field_name %>" rows="3" maxlength="<%= f.max_length || '' %>"
+              placeholder="请输入<%= f.label %>"><%= record ? (record[f.field_name]||'') : '' %></textarea>
+          <% } else { %>
+            <input type="<%= f.data_type==='date' ? 'date' : 'text' %>"
+              name="<%= f.field_name %>"
+              value="<%= record ? (record[f.field_name]||'') : '' %>"
+              maxlength="<%= f.max_length || '' %>"
+              placeholder="请输入<%= f.label %>"
+              <%= f.is_required ? 'required' : '' %>>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">保存</button>
+      <a href="/lab-instrument" class="btn btn-default">取消</a>
+    </div>
+  </form>
+</div>
+
+<script>
+document.getElementById('instForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const id = this.dataset.id;
+  const payload = {};
+  new FormData(this).forEach((v, k) => { payload[k] = v; });
+  const url = id ? '/lab-instrument/api/records/' + id : '/lab-instrument/api/records';
+  const res = await fetch(url, {
+    method: id ? 'PUT' : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const j = await res.json();
+  if (j.ok) {
+    window.location.href = id ? '/lab-instrument/view/' + id : '/lab-instrument/view/' + j.data.id;
+  } else {
+    alert(j.msg || '保存失败');
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>
